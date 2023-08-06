@@ -1,0 +1,151 @@
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 10, 9, 8, 7);//lcd pin declaration
+const int switchPin = 6;//switch is connected to digital pin 6
+const int ledPin = 2;//led is connected to digital pin 2
+const int buzzerPin=13;//buzzer is connected to digital pin 13
+
+int pMin = 0;
+int pMax = 1023;
+int sen1=0;
+int sen2=0;
+
+int switchvalue=0;
+
+
+
+void setup() {
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  Serial.begin(9600);
+  pinMode(A0,INPUT);//initialize sensor1 as input
+  pinMode(A1,INPUT);//initialize sensor2 as input
+  
+  pinMode(switchPin,INPUT);//initialize switch as input
+  pinMode(ledPin,OUTPUT);//initialize led as output
+  }
+
+void loop() 
+{  
+  
+  switchvalue = digitalRead(switchPin);
+ sen1 = analogRead(A0);
+ sen1= map(sen1, pMin, pMax, 0,100);
+  sen2=analogRead(A1);
+  sen2=map(sen2,pMin,pMax,0,100);
+
+  
+  
+  if(switchvalue==HIGH){ 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(sen1);
+   delay(1000);
+ 
+  lcd.print(" ");
+  lcd.setCursor(3, 0);
+  lcd.print(sen2);
+ 
+ 
+  lcd.setCursor(12,0);
+  lcd.print(" PSI");
+   delay(1000);
+   
+    if((sen1>=25&&sen1<=35)&&(sen2>=25&&sen2<=35))//25 psi to 35 psi is normal pressure
+   {
+   
+  lcd.setCursor(0,1);
+  lcd.print("ALL TP NORMAL");
+   digitalWrite(ledPin, LOW);
+   noTone(buzzerPin);
+     
+  delay(1000);
+ 
+   }
+      if((sen1<30)&&(sen2<30))
+   {
+   
+  lcd.setCursor(0,1);
+  lcd.print("ALL TP LOW");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+  noTone(buzzerPin);
+  
+   
+  }
+     if((sen1>40)&&(sen2>40))
+   {
+   
+  lcd.setCursor(0,1);
+  lcd.print("ALL TP HIGH");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+  noTone(buzzerPin);
+  }
+     if((sen1<30)&&(sen2>=30&&sen2<=40))
+   {
+    // lcd.clear();
+  lcd.setCursor(0,1);
+  lcd.print("1st tyre TP LOW");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+  noTone(buzzerPin);
+  }
+      if((sen1>40)&&(sen2>=30&&sen2<=40))
+   {
+   
+  lcd.setCursor(0,1);
+  lcd.print("1st tyre TP HIGH");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+  noTone(buzzerPin);
+  }
+   if((sen1>=30&&sen1<=40)&&(sen2<30))
+     {
+    lcd.setCursor(0,1);
+  lcd.print("2nd tyre TP LOW");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+  noTone(buzzerPin);
+  } 
+    if((sen1>=30&&sen1<=40)&&(sen2>40))
+     {
+    lcd.setCursor(0,1);
+  lcd.print("2nd tyre TP HIGH");
+     
+  delay(1000);
+  digitalWrite(ledPin, HIGH);
+  tone(buzzerPin,1000);
+  delay(1000);
+  digitalWrite(ledPin,LOW);
+ 
+  }
+        }
+  else
+  { 
+  
+   lcd.clear();  
+  digitalWrite(ledPin, LOW);
+  
+}
+}
